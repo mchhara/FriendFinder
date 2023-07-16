@@ -26,6 +26,7 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { DatePickerComponent } from './_forms/date-picker/date-picker.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { DatePickerComponent } from './_forms/date-picker/date-picker.component'
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    BsDropdownModule.forRoot(),
     ReactiveFormsModule,
     SharedModule
   ],

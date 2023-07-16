@@ -10,7 +10,7 @@
         [maxDate]="maxDate"
     >
 
-    <div *nfIf="control.errors?.[required]" class="invalid-feedback">
+    <div *ngIf="control.errors?.['required']" class="invalid-feedback">
         {{label}} is required
     </div>
 
