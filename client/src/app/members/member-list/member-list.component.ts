@@ -24,7 +24,7 @@ export class MemberListComponent implements OnInit {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if(user) {
-          this.userParams = new UserParams(user);
+          this.userParams = new UserParams();
           this.user = user;
         }
       }
@@ -49,7 +49,7 @@ export class MemberListComponent implements OnInit {
 
   resetFilters() {
     if(this.user) {
-      this.userParams = new UserParams(this.user);
+      this.userParams = new UserParams();
       this.loadMembers();
     }
   }
