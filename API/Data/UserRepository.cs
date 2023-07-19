@@ -5,6 +5,7 @@ using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace API.Data
 {
@@ -32,7 +33,9 @@ namespace API.Data
             var query = _context.Users.AsQueryable();
 
             query = query.Where(u => u.Username != userParams.CurrentUsername);
-            query = query.Where(u => u.Gender == userParams.Gender);
+
+            if(!userParams.Gender.Equals("All"))
+            {query = query.Where(u => u.Gender == userParams.Gender);}
 
             var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
             var maxDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));
