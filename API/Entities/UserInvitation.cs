@@ -1,6 +1,6 @@
 namespace API.Entities
 {
-    public class UserInvide
+    public class UserInvitation
     {
         public User SourceUser { get; set; }
         public int SourceUserId { get; set; }
