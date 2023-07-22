@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,24 +25,24 @@ namespace API.Data
            return await _dataContext.Invitations.FindAsync(sourceUserId, targetUserId);
         }
 
-        public async Task<IEnumerable<InvitationDto>> GetUserInvitations(string predicate, int userId)
+        public async Task<PagedList<InvitationDto>> GetUserInvitations(InvitationsParams invitationsParams)
         {
             var users = _dataContext.Users.OrderBy(u =>u.Username).AsQueryable();
             var invitations = _dataContext.Invitations.AsQueryable();
 
-           if (predicate == "invided") 
+           if (invitationsParams.Predicate == "invided") 
            {
-                invitations = invitations.Where(invitation => invitation.SourceUserId == userId);
+                invitations = invitations.Where(invitation => invitation.SourceUserId == invitationsParams.UserId);
                 users = invitations.Select(invitation => invitation.TargetUser);
            }
 
-            if (predicate == "invidedBy") 
+            if (invitationsParams.Predicate == "invidedBy") 
            {
-                invitations = invitations.Where(invitation => invitation.TargetUserId == userId);
+                invitations = invitations.Where(invitation => invitation.TargetUserId == invitationsParams.UserId);
                 users = invitations.Select(invitation => invitation.SourceUser);
            }
 
-           return await users.Select(user => new InvitationDto
+           var invidedUsers = users.Select(user => new InvitationDto
            {
                 Username = user.Username,
                 KnownAs = user.KnownAs,
@@ -49,7 +50,9 @@ namespace API.Data
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain).Url,
                 City = user.City,
                 Id = user.Id
-           }).ToListAsync();
+           });
+
+           return await PagedList<InvitationDto>.CreateAsync(invidedUsers, invitationsParams.PageNumber, invitationsParams.PageSize);
         }
 
         public async Task<User> GetUserWithInvitations(int userId)
