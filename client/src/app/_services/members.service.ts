@@ -104,7 +104,7 @@ export class MembersService {
   }
 
   getInvitations(predicate: string){
-    return this.http.get(this.baseUrl + 'invitations?predicate=' + predicate);
+    return this.http.get<Member[]>(this.baseUrl + 'invitations?predicate=' + predicate);
   }
 
   private getPaginatedResult<T>(url: string, params: HttpParams) {
