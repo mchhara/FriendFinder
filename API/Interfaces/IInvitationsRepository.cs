@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
+using API.Helpers;
 
 namespace API.Interfaces
 {
@@ -11,6 +12,6 @@ namespace API.Interfaces
     {
         Task<UserInvitation> GetUserInvitation(int sourceUserId, int targetUserId);
         Task<User> GetUserWithInvitations(int userId);
-        Task<IEnumerable<InvitationDto>> GetUserInvitations(string predicate, int userId);
+        Task<PagedList<InvitationDto>> GetUserInvitations(InvitationsParams invitationsParams);
     }
 }

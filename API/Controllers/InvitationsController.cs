@@ -1,6 +1,7 @@
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,9 +47,13 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<InvitationDto>>> GetUserInvitations(string predicate)
+        public async Task<ActionResult<PagedList<InvitationDto>>> GetUserInvitations([FromQuery]InvitationsParams invitationsParams)
         {
-            var users = await _invitationsRepository.GetUserInvitations(predicate, User.GetUserId());
+            invitationsParams.UserId = User.GetUserId();
+
+            var users = await _invitationsRepository.GetUserInvitations(invitationsParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages));
 
             return Ok(users);
         }
