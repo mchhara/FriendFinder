@@ -15,6 +15,7 @@ namespace API.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<UserInvitation> Invitations { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,8 +34,17 @@ namespace API.Data
                 .HasOne(t => t.TargetUser)
                 .WithMany(i => i.InvidedByUsers)
                 .HasForeignKey(t => t.TargetUserId)
-                .OnDelete(DeleteBehavior.Cascade);    
-                
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(u => u.Recipient)
+                .WithMany(m => m.MessagesReceived)
+                .OnDelete(DeleteBehavior.Restrict);  
+
+            modelBuilder.Entity<Message>()
+                .HasOne(u => u.Sender)
+                .WithMany(m => m.MessagesSent)
+                .OnDelete(DeleteBehavior.Restrict);    
         }
 
     }
