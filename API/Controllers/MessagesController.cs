@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class MessageController : BaseApiController
+    public class MessagesController : BaseApiController
     {
         private readonly IUserRepository _userRepository;
         private readonly IMessageRepository _messageRepository;
         private readonly IMapper _mapper;
-        public MessageController(IUserRepository userRepository, IMessageRepository messageRepository, 
+        public MessagesController(IUserRepository userRepository, IMessageRepository messageRepository, 
             IMapper mapper)
         {
             _mapper = mapper;
