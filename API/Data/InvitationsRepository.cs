@@ -27,7 +27,7 @@ namespace API.Data
 
         public async Task<PagedList<InvitationDto>> GetUserInvitations(InvitationsParams invitationsParams)
         {
-            var users = _dataContext.Users.OrderBy(u =>u.Username).AsQueryable();
+            var users = _dataContext.Users.OrderBy(u =>u.UserName).AsQueryable();
             var invitations = _dataContext.Invitations.AsQueryable();
 
            if (invitationsParams.Predicate == "invided") 
@@ -44,7 +44,7 @@ namespace API.Data
 
            var invidedUsers = users.Select(user => new InvitationDto
            {
-                Username = user.Username,
+                Username = user.UserName,
                 KnownAs = user.KnownAs,
                 Age = user.DateOfBirth.CalculateAge(),
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain).Url,

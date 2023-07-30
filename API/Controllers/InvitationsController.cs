@@ -27,7 +27,7 @@ namespace API.Controllers
 
             if(invidedUser == null) return NotFound();
 
-            if(sourceUser.Username == username) return BadRequest("You cannot invide to friends yourself");
+            if(sourceUser.UserName == username) return BadRequest("You cannot invide to friends yourself");
 
             var userInvitation = await _invitationsRepository.GetUserInvitation(sourceUserId, invidedUser.Id);
 

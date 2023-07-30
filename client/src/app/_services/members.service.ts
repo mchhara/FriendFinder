@@ -19,15 +19,18 @@ export class MembersService {
   user: User | undefined;
   userParams: UserParams | undefined;
 
-  constructor(private http: HttpClient, private accountService: AccountService) {
+  constructor(
+    private http: HttpClient,
+    private accountService: AccountService
+  ) {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
-      next: user => {
-        if(user) {
+      next: (user) => {
+        if (user) {
           this.userParams = new UserParams();
           this.user = user;
         }
-      }
-    })
+      },
+    });
   }
 
   getUserParams() {
@@ -39,7 +42,7 @@ export class MembersService {
   }
 
   resetUserParams() {
-    if(this.user) {
+    if (this.user) {
       this.userParams = new UserParams();
       return this.userParams;
     }
@@ -61,23 +64,25 @@ export class MembersService {
     params = params.append('gender', userParams.gender);
     params = params.append('orderBy', userParams.orderBy);
 
-    return getPaginatedResult<Member[]>(this.baseUrl + 'users', params, this.http)
-      .pipe(
-        map((response) => {
-          this.memberCache.set(Object.values(userParams).join('-'), response);
-          return response;
-        })
-      );
+    return getPaginatedResult<Member[]>(
+      this.baseUrl + 'users',
+      params,
+      this.http
+    ).pipe(
+      map((response) => {
+        this.memberCache.set(Object.values(userParams).join('-'), response);
+        return response;
+      })
+    );
   }
 
   getMember(username: string) {
     const member = [...this.memberCache.values()]
-      .reduce((arr,elem) =>arr.concat(elem.result), [])
+      .reduce((arr, elem) => arr.concat(elem.result), [])
       .find((member: Member) => member.username === username);
 
+    if (member) return of(member);
 
-      if(member) return of(member);
-       
     return this.http.get<Member>(this.baseUrl + 'users/' + username);
   }
 
@@ -98,17 +103,19 @@ export class MembersService {
     return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
   }
 
-  invideMember(username: string){
+  invideMember(username: string) {
     return this.http.post(this.baseUrl + 'invitations/' + username, {});
   }
 
-  getInvitations(predicate: string, pageNumber: number, pageSize: number){
+  getInvitations(predicate: string, pageNumber: number, pageSize: number) {
     let params = getPaginationHeaders(pageNumber, pageSize);
 
     params = params.append('predicate', predicate);
 
-    return getPaginatedResult<Member[]>(this.baseUrl + "invitations", params, this.http);
+    return getPaginatedResult<Member[]>(
+      this.baseUrl + 'invitations',
+      params,
+      this.http
+    );
   }
-
-  
 }
