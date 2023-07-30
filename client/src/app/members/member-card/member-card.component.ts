@@ -11,15 +11,16 @@ import { MembersService } from 'src/app/_services/members.service';
 export class MemberCardComponent implements OnInit {
   @Input() member: Member | undefined;
 
-  constructor(private memberService: MembersService, private toastr: ToastrService) {}
+  constructor(
+    private memberService: MembersService,
+    private toastr: ToastrService
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   invideMember(member: Member) {
     this.memberService.invideMember(member.username).subscribe({
-      next: () => this.toastr.success('You have invided ' + member.knownAs) 
-    })
+      next: () => this.toastr.success('You have invided ' + member.knownAs),
+    });
   }
-
 }
