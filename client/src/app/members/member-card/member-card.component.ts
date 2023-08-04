@@ -19,7 +19,7 @@ export class MemberCardComponent implements OnInit {
   ngOnInit(): void {}
 
   invideMember(member: Member) {
-    this.memberService.invideMember(member.username).subscribe({
+    this.memberService.invideMember(member.userName).subscribe({
       next: () => this.toastr.success('You have invided ' + member.knownAs),
     });
   }
