@@ -23,7 +23,8 @@ namespace API.Extensions
             services.AddScoped<LogUserActivity>();
             services.AddScoped<IInvitationsRepository,InvitationsRepository>();
             services.AddScoped<IMessageRepository,MessageRepository>(); 
-            
+            services.AddSignalR();
+
             return services;
         }
     }
