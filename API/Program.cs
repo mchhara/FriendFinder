@@ -29,7 +29,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod()
+app.UseCors(builder => builder.AllowAnyHeader()
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
     .WithOrigins("https://localhost:4200"));
 
 app.UseHttpsRedirection();
