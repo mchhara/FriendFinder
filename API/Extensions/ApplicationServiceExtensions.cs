@@ -3,6 +3,7 @@ using API.Services;
 using API.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using API.Helpers;
+using API.SignlaR;
 
 namespace API.Extensions
 {
@@ -24,6 +25,7 @@ namespace API.Extensions
             services.AddScoped<IInvitationsRepository,InvitationsRepository>();
             services.AddScoped<IMessageRepository,MessageRepository>(); 
             services.AddSignalR();
+            services.AddSingleton<PresenceTracker>();
 
             return services;
         }
