@@ -4,6 +4,7 @@ using API.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using API.Helpers;
 using API.SignlaR;
+using API.Data.Migrations;
 
 namespace API.Extensions
 {
@@ -17,15 +18,13 @@ namespace API.Extensions
             });
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IUserRepository, UserRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<LogUserActivity>();
-            services.AddScoped<IInvitationsRepository,InvitationsRepository>();
-            services.AddScoped<IMessageRepository,MessageRepository>(); 
             services.AddSignalR();
             services.AddSingleton<PresenceTracker>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }
