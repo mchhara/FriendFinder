@@ -115,10 +115,5 @@ namespace API.Data
         {
             _dataContext.Connections.Remove(connection);
         }
-
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _dataContext.SaveChangesAsync() > 0;
-        }
     }
 }
