@@ -27,8 +27,7 @@ namespace API.Controllers
         public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery]
         UserParams userParams)
         {
-            var currentUser = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
-            userParams.CurrentUsername = currentUser.UserName;
+            userParams.CurrentUsername = User.GetUsername();
 
             var users = await _uow.UserRepository.GetMembersAsync(userParams);
 
