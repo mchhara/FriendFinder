@@ -104,8 +104,6 @@ namespace API.Data
                 {
                     message.DateRead = DateTime.UtcNow;
                 }
-
-                await _dataContext.SaveChangesAsync();
             } 
 
             return _mapper.Map<IEnumerable<MessageDto>>(messages);
