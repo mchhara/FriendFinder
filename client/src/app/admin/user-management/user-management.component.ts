@@ -34,7 +34,7 @@ export class UserManagementComponent implements OnInit {
     const config = {
       class: 'modal-dialog-centered',
       initialState: {
-        username: user.userName,
+        userName: user.userName,
         availableRoles: this.availableRoles,
         selectedRoles: [...user.roles]
       }
