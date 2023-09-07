@@ -113,7 +113,7 @@ namespace API.Controllers
         {
             var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
 
-            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+            var photo =  await _uow.PhotoRepository.GetPhotoById(photoId);
 
             if(photo == null) return NotFound();
 
