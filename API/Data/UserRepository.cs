@@ -83,5 +83,15 @@ namespace API.Data
         {
             _context.Entry(user).State = EntityState.Modified;
         }
+
+        public async Task<User> GetUserByPhotoId(int photoId)
+        {
+            return await _context.Users
+                .Include(p => p.Photos)
+                .IgnoreQueryFilters()
+                .Where(p => p.Photos.Any(p => p.Id == photoId))
+                .FirstOrDefaultAsync();
+        }
+        
     }
 }
