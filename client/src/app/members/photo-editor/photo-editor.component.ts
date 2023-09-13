@@ -19,7 +19,7 @@ export class PhotoEditorComponent implements OnInit {
   hasBaseDropZoneOver = false;
   baseUrl = environment.apiUrl;
   user: User | undefined;
-  
+
 
   constructor(private accountService: AccountService, private memberService: MembersService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
@@ -28,7 +28,7 @@ export class PhotoEditorComponent implements OnInit {
       }
     })
   }
-  
+
   ngOnInit(): void {
     this.initializeUploader();
   }
