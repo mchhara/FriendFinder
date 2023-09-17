@@ -23,7 +23,7 @@ namespace API.Entities
         public List<UserInvitation> InvideUsers { get; set; }
         public List<Message> MessagesSent { get; set; }
         public List<Message> MessagesReceived { get; set; }
-
+        public List<Post> Posts { get; set; } 
         public ICollection<UserRole> UserRoles { get; set   ; }
 
     }
