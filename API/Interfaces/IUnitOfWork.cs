@@ -6,6 +6,7 @@ namespace API.Interfaces
         IMessageRepository MessageRepository{get;}
         IInvitationsRepository InvitationsRepository {get;}
         IPhotoRepository PhotoRepository { get; }
+        IPostRepository PostRepository { get; }
         Task<bool> Complete();
         bool HasChanges();
     }
