@@ -26,6 +26,8 @@ namespace API.Data.Migrations
 
         public IPhotoRepository PhotoRepository => new PhotoRepository(_context);
 
+        public IPostRepository PostRepository => new PostRepository(_context);
+
         public async Task<bool> Complete()
         {
             return await _context.SaveChangesAsync() >0;
