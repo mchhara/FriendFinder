@@ -1,6 +1,9 @@
 using System.Security.Claims;
+using API.DTOs;
 using API.Entities;
+using API.Extensions;
 using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -8,34 +11,50 @@ namespace API.Controllers
     public class PostsController : BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
-        public PostsController(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public PostsController(IUnitOfWork unitOfWork, IMapper mapper)
         {
+            _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Post>>> GetPosts()
+        [HttpGet(Name = "GetPosts")]
+        public async Task<ActionResult<IEnumerable<PostDto>>> GetPosts()
         {
             var posts = await _unitOfWork.PostRepository.GetAllPosts();
+
             if(posts == null) return NoContent();
-            return Ok(posts);
+
+            var postsDto = _mapper.Map<IEnumerable<PostDto>>(posts);
+            
+            return Ok(postsDto);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Post>> CreatePost([FromBody] Post post)
+        public async Task<ActionResult<PostDto>> CreatePost([FromBody] CreatePostDto postDto)
         {
-            if(post == null)
+            if(postDto == null)
             {
                 return BadRequest();
             }
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            post.UserId = Int32.Parse(userId);
+            var userId = User.GetUserId();
 
-            await _unitOfWork.PostRepository.CreatePost(post);
+            var post = new Post 
+            {
+                Content = postDto.Content,
+                UserId = userId
+            };
 
-            return CreatedAtAction(nameof(GetPosts), new {id = post.Id }, post);
+             _unitOfWork.PostRepository.CreatePost(post);
 
+            if(await _unitOfWork.Complete())
+            {
+                return CreatedAtRoute("GetPosts", new { id = post.Id },
+                     _mapper.Map<PostDto>(post));
+            }
+
+            return BadRequest("Problem adding post");
         }
     }
 }

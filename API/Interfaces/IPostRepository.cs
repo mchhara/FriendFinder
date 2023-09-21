@@ -1,10 +1,13 @@
+
+
 using API.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Interfaces
 {
     public interface IPostRepository
     {
         Task<IEnumerable<Post>> GetAllPosts();
-        Task CreatePost(Post post);
+        void CreatePost(Post post);
     }
 }

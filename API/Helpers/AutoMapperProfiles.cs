@@ -17,6 +17,9 @@ namespace API.Helpers
                 opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
             CreateMap<Photo, PhotoDto>();
             CreateMap<MemberUpdateDto, User>();
+            CreateMap<PostDto, Post>()
+                .ReverseMap();
+            CreateMap<CreatePostDto, Post>();    
             CreateMap<RegisterDto, User>();
             CreateMap<Message, MessageDto>()
                 .ForMember(d => d.SenderPhotoUrl, o => o.MapFrom(s => s.Sender.Photos
