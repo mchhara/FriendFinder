@@ -1,5 +1,6 @@
 using API.Entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
@@ -18,10 +19,9 @@ namespace API.Data
             return await _dataContext.Posts.ToListAsync();
         } 
 
-        public async Task CreatePost(Post post)
+        public void CreatePost(Post post)
         {
              _dataContext.Posts.Add(post);
-             await _dataContext.SaveChangesAsync();
         }
     }
 }
