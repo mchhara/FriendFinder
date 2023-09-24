@@ -43,7 +43,8 @@ namespace API.Controllers
             var post = new Post 
             {
                 Content = postDto.Content,
-                UserId = userId
+                UserId = userId,
+                UserName = User.GetUsername()
             };
 
              _unitOfWork.PostRepository.CreatePost(post);
