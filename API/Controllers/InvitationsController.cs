@@ -33,6 +33,10 @@ namespace API.Controllers
 
             if(userInvitation != null) return BadRequest("You already invided this user");
 
+            // Sprawdź czy użytkownicy już są znajomymi
+            var areFriends = await _uow.FriendRepository.AreFriends(sourceUserId, invidedUser.Id);
+            if(areFriends) return BadRequest("You are already friends with this user");
+
             userInvitation = new UserInvitation
             {
                 SourceUserId = sourceUserId,
@@ -56,6 +60,61 @@ namespace API.Controllers
             Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages));
 
             return Ok(users);
+        }
+
+        [HttpGet("friends")]
+        public async Task<ActionResult<PagedList<InvitationDto>>> GetUserFriends([FromQuery]InvitationsParams invitationsParams)
+        {
+            invitationsParams.UserId = User.GetUserId();
+
+            var friends = await _uow.InvitationsRepository.GetUserFriends(invitationsParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(friends.CurrentPage, friends.PageSize, friends.TotalCount, friends.TotalPages));
+
+            return Ok(friends);
+        }
+
+        [HttpPost("accept/{username}")]
+        public async Task<ActionResult> AcceptInvitation(string username)
+        {
+            var targetUserId = User.GetUserId();
+            var sourceUser = await _uow.UserRepository.GetUserByUsernameAsync(username);
+
+            if (sourceUser == null) return NotFound();
+
+            var success = await _uow.InvitationsRepository.AcceptInvitation(sourceUser.Id, targetUserId);
+
+            if (success) return Ok();
+
+            return BadRequest("Failed to accept invitation");
+        }
+
+        [HttpPost("reject/{username}")]
+        public async Task<ActionResult> RejectInvitation(string username)
+        {
+            var targetUserId = User.GetUserId();
+            var sourceUser = await _uow.UserRepository.GetUserByUsernameAsync(username);
+
+            if (sourceUser == null) return NotFound();
+
+            var success = await _uow.InvitationsRepository.RejectInvitation(sourceUser.Id, targetUserId);
+
+            if (success) return Ok();
+
+            return BadRequest("Failed to reject invitation");
+        }
+
+        [HttpGet("check-friend/{username}")]
+        public async Task<ActionResult<bool>> CheckIfFriend(string username)
+        {
+            var currentUserId = User.GetUserId();
+            var targetUser = await _uow.UserRepository.GetUserByUsernameAsync(username);
+
+            if (targetUser == null) return NotFound();
+
+            var isFriend = await _uow.FriendRepository.AreFriends(currentUserId, targetUser.Id);
+
+            return Ok(isFriend);
         }
     }
 }

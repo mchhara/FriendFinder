@@ -118,4 +118,28 @@ export class MembersService {
       this.http
     );
   }
+
+  acceptInvitation(username: string) {
+    return this.http.post(this.baseUrl + 'invitations/accept/' + username, {});
+  }
+
+  rejectInvitation(username: string) {
+    return this.http.post(this.baseUrl + 'invitations/reject/' + username, {});
+  }
+
+  getFriends(pageNumber: number, pageSize: number) {
+    let params = getPaginationHeaders(pageNumber, pageSize);
+
+    return getPaginatedResult<Member[]>(
+      this.baseUrl + 'invitations/friends',
+      params,
+      this.http
+    );
+  }
+
+  checkIfFriend(username: string) {
+    return this.http.get<boolean>(
+      this.baseUrl + 'invitations/check-friend/' + username
+    );
+  }
 }

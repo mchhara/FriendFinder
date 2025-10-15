@@ -55,11 +55,70 @@ namespace API.Data
            return await PagedList<InvitationDto>.CreateAsync(invidedUsers, invitationsParams.PageNumber, invitationsParams.PageSize);
         }
 
+        public async Task<PagedList<InvitationDto>> GetUserFriends(InvitationsParams invitationsParams)
+        {
+            var friends = _dataContext.Friends
+                .Where(f => f.UserId == invitationsParams.UserId)
+                .Select(f => f.FriendUser)
+                .OrderBy(u => u.UserName)
+                .AsQueryable();
+
+            var friendsList = friends.Select(friend => new InvitationDto
+            {
+                Username = friend.UserName,
+                KnownAs = friend.KnownAs,
+                Age = friend.DateOfBirth.CalculateAge(),
+                PhotoUrl = friend.Photos.FirstOrDefault(x => x.IsMain).Url,
+                City = friend.City,
+                Id = friend.Id
+            });
+
+            return await PagedList<InvitationDto>.CreateAsync(friendsList, invitationsParams.PageNumber, invitationsParams.PageSize);
+        }
+
         public async Task<User> GetUserWithInvitations(int userId)
         {
              return await _dataContext.Users
                 .Include(x => x.InvideUsers)
                 .FirstOrDefaultAsync(x => x.Id == userId);
+        }
+
+        public async Task<bool> AcceptInvitation(int sourceUserId, int targetUserId)
+        {
+            var invitation = await GetUserInvitation(sourceUserId, targetUserId);
+            if (invitation == null) return false;
+
+            // Usuń zaproszenie
+            _dataContext.Invitations.Remove(invitation);
+
+            // Dodaj relację znajomych (symetryczną)
+            var friend1 = new Friend
+            {
+                UserId = sourceUserId,
+                FriendUserId = targetUserId
+            };
+
+            var friend2 = new Friend
+            {
+                UserId = targetUserId,
+                FriendUserId = sourceUserId
+            };
+
+            _dataContext.Friends.Add(friend1);
+            _dataContext.Friends.Add(friend2);
+
+            return await _dataContext.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> RejectInvitation(int sourceUserId, int targetUserId)
+        {
+            var invitation = await GetUserInvitation(sourceUserId, targetUserId);
+            if (invitation == null) return false;
+
+            // Usuń zaproszenie
+            _dataContext.Invitations.Remove(invitation);
+
+            return await _dataContext.SaveChangesAsync() > 0;
         }
     }
 }

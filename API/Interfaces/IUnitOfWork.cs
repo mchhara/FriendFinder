@@ -5,6 +5,7 @@ namespace API.Interfaces
         IUserRepository UserRepository {get;}
         IMessageRepository MessageRepository{get;}
         IInvitationsRepository InvitationsRepository {get;}
+        IFriendRepository FriendRepository { get; }
         IPhotoRepository PhotoRepository { get; }
         IPostRepository PostRepository { get; }
         Task<bool> Complete();

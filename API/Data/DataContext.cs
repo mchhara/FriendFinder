@@ -17,6 +17,7 @@ namespace API.Data
         {
         }
         public DbSet<UserInvitation> Invitations { get; set; }
+        public DbSet<Friend> Friends { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Connection> Connections { get; set; }
@@ -52,6 +53,21 @@ namespace API.Data
                 .HasOne(t => t.TargetUser)
                 .WithMany(i => i.InvidedByUsers)
                 .HasForeignKey(t => t.TargetUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Friend>()
+                .HasKey(k => new { k.UserId, k.FriendUserId });
+
+            modelBuilder.Entity<Friend>()
+                .HasOne(f => f.User)
+                .WithMany(u => u.Friends)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Friend>()
+                .HasOne(f => f.FriendUser)
+                .WithMany()
+                .HasForeignKey(f => f.FriendUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Message>()

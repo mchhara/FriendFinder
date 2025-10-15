@@ -24,6 +24,8 @@ namespace API.Data.Migrations
 
         public IInvitationsRepository InvitationsRepository => new InvitationsRepository(_context);
 
+        public IFriendRepository FriendRepository => new FriendRepository(_context);
+
         public IPhotoRepository PhotoRepository => new PhotoRepository(_context);
 
         public IPostRepository PostRepository => new PostRepository(_context);

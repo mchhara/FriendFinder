@@ -1,30 +1,101 @@
 <div class="card mb-4" *ngIf="member">
-    <div class="card-img-wrapper">
-        <img src="{{member.photoUrl || './assets/user.png'}}" alt="{{member.knownAs}}" class="card-img-top">
-        <ul class="list-inline member-icons animate text-center">
-            <li class="list-inline-item">
-                <button routerLink="/members/{{member.userName}}" class="btn btn-primary">
-                    <i class="fa fa-info-circle"></i></button>
-            </li>
-            <li class="list-inline-item">
-                <button (click)="invideMember(member)" class="btn btn-primary"><i class="fa fa-user-plus"></i></button>
-            </li>
-            <li class="list-inline-item">
-                <button
-                    routerLink="/members/{{member.userName}}"
-                    [queryParams]="{tab: 'Messages'}"
-                    class="btn btn-primary">
-                    <i class="fa fa-wechat"></i></button>
-            </li>
-        </ul>
-    </div>
-    <div class="card-body p-1">
-        <h6 class="card-title text-center mb-1">
-            <span [class.is-online]="(presenceService.onlineUsers$ | async)?.includes(member.userName)">
-                <i class="fa fa-user me-2"></i>
-            </span>
-            {{member.knownAs}}, {{member.age}}
-        </h6>
-        <p class="card-text text-muted text-center">{{member.city}}</p>
-    </div>
+  <div class="card-img-wrapper">
+    <img
+      src="{{ member.photoUrl || './assets/user.png' }}"
+      alt="{{ member.knownAs }}"
+      class="card-img-top"
+    />
+    <ul class="list-inline member-icons animate text-center">
+      <li class="list-inline-item">
+        <button
+          routerLink="/members/{{ member.userName }}"
+          class="btn btn-primary"
+        >
+          <i class="fa fa-info-circle"></i>
+        </button>
+      </li>
+
+      <!-- Przyciski dla kontekstu members (lista użytkowników) -->
+      <li class="list-inline-item" *ngIf="context === 'members'">
+        <!-- Przycisk zaproszenia dla użytkowników którzy nie są znajomymi -->
+        <button
+          *ngIf="!isFriend"
+          (click)="invideMember(member)"
+          class="btn btn-primary"
+        >
+          <i class="fa fa-user-plus"></i>
+        </button>
+        <!-- Badge dla znajomych -->
+        <span
+          *ngIf="isFriend"
+          class="badge bg-success text-white"
+          title="Friend"
+        >
+          <i class="fa fa-heart"></i> Friend
+        </span>
+      </li>
+
+      <!-- Przyciski dla kontekstu invitations -->
+      <ng-container *ngIf="context === 'invitations'">
+        <!-- Przyciski dla zaproszeń otrzymanych (invidedBy) -->
+        <li class="list-inline-item" *ngIf="invitationType === 'invidedBy'">
+          <button
+            (click)="acceptInvitation(member)"
+            class="btn btn-success"
+            title="Accept invitation"
+          >
+            <i class="fa fa-check"></i>
+          </button>
+        </li>
+        <li class="list-inline-item" *ngIf="invitationType === 'invidedBy'">
+          <button
+            (click)="rejectInvitation(member)"
+            class="btn btn-danger"
+            title="Reject invitation"
+          >
+            <i class="fa fa-times"></i>
+          </button>
+        </li>
+
+        <!-- Informacja dla zaproszeń wysłanych (invided) -->
+        <li class="list-inline-item" *ngIf="invitationType === 'invided'">
+          <span class="badge bg-warning text-dark" title="Invitation sent">
+            <i class="fa fa-clock-o"></i> Pending
+          </span>
+        </li>
+      </ng-container>
+
+      <!-- Przyciski dla kontekstu friends -->
+      <ng-container *ngIf="context === 'friends'">
+        <li class="list-inline-item">
+          <span class="badge bg-success text-white" title="Friend">
+            <i class="fa fa-heart"></i> Friend
+          </span>
+        </li>
+      </ng-container>
+
+      <li class="list-inline-item">
+        <button
+          routerLink="/members/{{ member.userName }}"
+          [queryParams]="{ tab: 'Messages' }"
+          class="btn btn-primary"
+        >
+          <i class="fa fa-wechat"></i>
+        </button>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body p-1">
+    <h6 class="card-title text-center mb-1">
+      <span
+        [class.is-online]="
+          (presenceService.onlineUsers$ | async)?.includes(member.userName)
+        "
+      >
+        <i class="fa fa-user me-2"></i>
+      </span>
+      {{ member.knownAs }}, {{ member.age }}
+    </h6>
+    <p class="card-text text-muted text-center">{{ member.city }}</p>
+  </div>
 </div>

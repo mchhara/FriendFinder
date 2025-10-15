@@ -6,11 +6,11 @@ import { Pagination } from '../_models/pagination';
 @Component({
   selector: 'app-lists',
   templateUrl: './lists.component.html',
-  styleUrls: ['./lists.component.css']
+  styleUrls: ['./lists.component.css'],
 })
 export class ListsComponent implements OnInit {
   members: Member[] | undefined;
-  predicate = 'invided'
+  predicate: 'invided' | 'invidedBy' | 'friends' = 'invided';
   pageNumber = 1;
   pageSize = 5;
   pagination: Pagination | undefined;
@@ -22,12 +22,23 @@ export class ListsComponent implements OnInit {
   }
 
   loadInvitations() {
-    this.memberService.getInvitations(this.predicate, this.pageNumber, this.pageSize).subscribe({
-      next: response => {
-        this.members = response.result;
-        this.pagination = response.pagination;
-      }
-    })
+    if (this.predicate === 'friends') {
+      this.memberService.getFriends(this.pageNumber, this.pageSize).subscribe({
+        next: (response) => {
+          this.members = response.result;
+          this.pagination = response.pagination;
+        },
+      });
+    } else {
+      this.memberService
+        .getInvitations(this.predicate, this.pageNumber, this.pageSize)
+        .subscribe({
+          next: (response) => {
+            this.members = response.result;
+            this.pagination = response.pagination;
+          },
+        });
+    }
   }
 
   pageChanged(event: any) {
@@ -36,5 +47,4 @@ export class ListsComponent implements OnInit {
       this.loadInvitations();
     }
   }
-
 }

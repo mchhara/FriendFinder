@@ -13,5 +13,8 @@ namespace API.Interfaces
         Task<UserInvitation> GetUserInvitation(int sourceUserId, int targetUserId);
         Task<User> GetUserWithInvitations(int userId);
         Task<PagedList<InvitationDto>> GetUserInvitations(InvitationsParams invitationsParams);
+        Task<PagedList<InvitationDto>> GetUserFriends(InvitationsParams invitationsParams);
+        Task<bool> AcceptInvitation(int sourceUserId, int targetUserId);
+        Task<bool> RejectInvitation(int sourceUserId, int targetUserId);
     }
 }
