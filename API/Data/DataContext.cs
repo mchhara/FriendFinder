@@ -46,13 +46,13 @@ namespace API.Data
                 .HasOne(s => s.SourceUser)
                 .WithMany(i => i.InvideUsers)
                 .HasForeignKey(s => s.SourceUserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserInvitation>()
                 .HasOne(t => t.TargetUser)
                 .WithMany(i => i.InvidedByUsers)
                 .HasForeignKey(t => t.TargetUserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Message>()
                 .HasOne(u => u.Recipient)
@@ -71,6 +71,14 @@ namespace API.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Photo>().HasQueryFilter(p => p.IsApproved);
+            
+            // Configure DateOnly to DateTime conversion for SQL Server
+            modelBuilder.Entity<User>()
+                .Property(u => u.DateOfBirth)
+                .HasConversion(
+                    d => d.ToDateTime(TimeOnly.MinValue),
+                    d => DateOnly.FromDateTime(d)
+                );
         }
 
     }

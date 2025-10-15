@@ -31,11 +31,11 @@ export class RegisterComponent implements OnInit {
       dateOfBirth: ['', Validators.required],
       city: ['', Validators.required],
       country: ['', Validators.required],
-      password: ['', [Validators.required, 
+      password: ['', [Validators.required,
         Validators.minLength(4), Validators.maxLength(8)]],
       confirmPassword: ['', [Validators.required, this.matchValues('password')]],
     });
-    this,this.registerForm.controls['password'].valueChanges.subscribe({
+    this.registerForm.controls['password'].valueChanges.subscribe({
       next: () => this.registerForm.controls['confirmPassword'].updateValueAndValidity()
     });
   }
@@ -45,10 +45,11 @@ export class RegisterComponent implements OnInit {
       return control.value === control.parent?.get(matchTo)?.value ? null : {notMatching: true}
     }
   }
-  
+
   register(){
    const dob = this.getDateOnly(this.registerForm.controls['dateOfBirth'].value);
    const values = {...this.registerForm.value, dateOfBirth: dob};
+
     this.accountService.register(values).subscribe({
       next: () => {
         this.router.navigateByUrl('/members')
@@ -58,7 +59,7 @@ export class RegisterComponent implements OnInit {
       }
     })
   }
-  
+
   cancel(){
     this.cancelRegister.emit(false);
   }
